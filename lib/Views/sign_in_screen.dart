@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school_system/RegX/regX.dart';
 import 'package:smart_school_system/Views/widgets/formField.dart';
+import 'package:smart_school_system/helpers/bottom_sheet_bar.dart';
 
 // ignore: must_be_immutable
 class SignIn extends StatelessWidget {
@@ -148,33 +149,15 @@ class SignIn extends StatelessWidget {
     );
   }
 
-  void submit(BuildContext context) {
+  void submit(BuildContext context) async {
     if (formKey.currentState!.validate()) {
+      await showBlockingSheet(context);
       showSnackBar(
         context,
         "Login successful",
         backgroundColor: Color.fromARGB(255, 56, 110, 238),
       );
       Navigator.pushReplacementNamed(context, '/home');
-      return;
     }
   }
-}
-
-void showSnackBar(
-  BuildContext context,
-  String message, {
-  Color? backgroundColor,
-}) {
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: backgroundColor,
-        behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.all(16),
-        duration: Duration(seconds: 2),
-      ),
-    );
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Models/Tab_Model.dart';
+import 'package:smart_school_system/Models/tab_model.dart';
 import 'package:smart_school_system/Views/instructor_lab.dart';
 import 'package:smart_school_system/Views/student_lab.dart';
 import 'package:smart_school_system/Views/widgets/role_container.dart';
 
 // ignore: must_be_immutable
-class Lab extends StatelessWidget {
+class Lab extends StatefulWidget {
   Lab({
     super.key,
     required this.labname,
@@ -14,19 +14,27 @@ class Lab extends StatelessWidget {
     required this.instructor,
     required this.classname,
     required this.t,
+    required this.item,
   });
+  TabModel item;
   String labname;
   String from;
   String to;
   String instructor;
   String classname;
   TabModel t;
+
+  @override
+  State<Lab> createState() => _LabState();
+}
+
+class _LabState extends State<Lab> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
       child: Container(
-        height: 231,
+        height: selection == "Student" ? 150 : 231,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border(
@@ -44,58 +52,95 @@ class Lab extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  labname,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-                SizedBox(height: 10),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(Icons.watch_later_outlined, color: Color(0xFF4c5664)),
-                    SizedBox(width: 10),
                     Text(
-                      "$from : $to",
+                      widget.labname,
                       style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF4c5664),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
+                    ),
+                    Row(
+                      children: [
+                        widget.item.isAvailable == true
+                            ? Icon(Icons.circle, size: 10, color: Colors.green)
+                            : Icon(Icons.circle, size: 10, color: Colors.red),
+                        SizedBox(width: 5),
+                        Text(
+                          widget.item.isAvailable == true
+                              ? "Vacant"
+                              : "Occupied",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                            color: widget.item.isAvailable == true
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
                 SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.person_outline_outlined,
-                      color: Color(0xFF4c5664),
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      instructor,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF4c5664),
+                selection == "Student"
+                    ? SizedBox(height: 0)
+                    : Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.watch_later_outlined,
+                                color: Color(0xFF4c5664),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "${widget.from} : ${widget.to}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF4c5664),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.person_outline_outlined,
+                                color: Color(0xFF4c5664),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                widget.instructor,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF4c5664),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.people_alt_sharp,
+                                color: Color.fromARGB(255, 56, 110, 238),
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Class : ${widget.classname}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Color.fromARGB(255, 56, 110, 238),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.people_alt_sharp,
-                      color: Color.fromARGB(255, 56, 110, 238),
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      "Class : $classname",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Color.fromARGB(255, 56, 110, 238),
-                      ),
-                    ),
-                  ],
-                ),
                 SizedBox(height: 10),
                 SizedBox(
                   width: double.infinity,
@@ -105,14 +150,14 @@ class Lab extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => StudentLab(item: t),
+                            builder: (context) => StudentLab(item: widget.t),
                           ),
                         );
                       } else {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => InstructorLab(item: t),
+                            builder: (context) => InstructorLab(item: widget.t),
                           ),
                         );
                       }

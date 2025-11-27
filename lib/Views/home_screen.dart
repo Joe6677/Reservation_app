@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Models/Tab_Model.dart';
+import 'package:smart_school_system/Models/tab_model.dart';
 import 'package:smart_school_system/Views/widgets/date_container.dart';
 import 'package:smart_school_system/Views/widgets/lab.dart';
+import 'package:smart_school_system/helpers/bottom_sheet_bar.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -62,9 +63,26 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
             fontSize: 25,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final result = await showBottomChoiceSheet(
+                context,
+                "Are you sure you want to Logout?",
+                Colors.red,
+                Color.fromARGB(255, 56, 110, 238),
+              );
+              if (result == true) {
+                await showBlockingSheet(context);
+                Navigator.pushReplacementNamed(context, "/signin");
+              }
+            },
+            icon: Icon(Icons.login_outlined, color: Colors.white, size: 25),
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 20),
+        padding: const EdgeInsets.only(bottom: 5),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -130,7 +148,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                   isScrollable: true,
                   indicator: BoxDecoration(
                     color: Color.fromARGB(255, 56, 110, 238),
-
                     borderRadius: BorderRadius.circular(10),
                   ),
                   tabAlignment: TabAlignment.center,
@@ -143,7 +160,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -156,10 +172,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       )
                     : ListView.separated(
                         itemCount: filteredItems.length,
-                        separatorBuilder: (_, __) => SizedBox(height: 8),
+                        separatorBuilder: (_, _) => SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           final item = filteredItems[index];
                           return Lab(
+                            item: item,
                             labname: item.place,
                             from: "${item.from} AM",
                             to: "${item.to} AM",

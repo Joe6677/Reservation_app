@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Models/Tab_Model.dart';
+import 'package:smart_school_system/Models/tab_model.dart';
 
 // ignore: must_be_immutable
 class InstructorLab extends StatelessWidget {
@@ -11,7 +11,7 @@ class InstructorLab extends StatelessWidget {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 56, 110, 238),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(180),
+        preferredSize: Size.fromHeight(280),
         child: AppBar(
           actions: [
             IconButton(
@@ -33,7 +33,7 @@ class InstructorLab extends StatelessWidget {
             children: [
               SizedBox(height: 10),
               Text(
-                "Lab Details",
+                "${item.type} Schedule",
                 style: TextStyle(
                   letterSpacing: 2,
                   color: Colors.white,
@@ -41,7 +41,6 @@ class InstructorLab extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              Text("Lab Schedule", style: TextStyle(color: Colors.white)),
             ],
           ),
           elevation: 4,
@@ -61,91 +60,52 @@ class InstructorLab extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 15,
             children: [
-              Text(
-                item.place,
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.w400),
-              ),
+              item.type == "Class"
+                  ? Row(
+                      children: [
+                        Text(
+                          "${item.type} ${item.place}",
+                          style: TextStyle(
+                            fontSize: 35,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Text(
+                      item.place,
+                      style: TextStyle(
+                        fontSize: 35,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+              SizedBox(height: 10),
               Row(
                 children: [
-                  item.is_available == true
-                      ? Icon(Icons.circle, size: 15, color: Colors.green)
-                      : Icon(Icons.circle, size: 15, color: Colors.red),
-                  SizedBox(width: 10),
+                  Icon(
+                    Icons.circle,
+                    color: item.isAvailable == true ? Colors.green : Colors.red,
+                    size: 10,
+                  ),
+                  SizedBox(width: 5),
                   Text(
-                    item.is_available == true ? "Available" : "Occupied",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                      color: item.is_available == true
-                          ? Colors.green
-                          : Colors.red,
-                    ),
+                    item.isAvailable == true ? "Vacant" : "Occupied",
+                    style: item.isAvailable == true
+                        ? TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                          )
+                        : TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                          ),
                   ),
                 ],
               ),
-              item.is_available == true
-                  ? SizedBox()
-                  : Column(
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.access_time_sharp,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              "${item.from} AM -"
-                              " ${item.to} AM",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.person_outline,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              item.instructor,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.people_outline,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              item.classname,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-              SizedBox(height: 5),
+              SizedBox(height: 70),
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
@@ -163,6 +123,7 @@ class InstructorLab extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
                 child: TextButton(

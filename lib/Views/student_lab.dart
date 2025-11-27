@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Models/Tab_Model.dart';
-import 'package:smart_school_system/Views/widgets/role_container.dart';
+import 'package:smart_school_system/Models/tab_model.dart';
 
 // ignore: must_be_immutable
-class StudentLab extends StatelessWidget {
+class StudentLab extends StatefulWidget {
   StudentLab({super.key, required this.item});
   TabModel item;
+
+  @override
+  State<StudentLab> createState() => _StudentLabState();
+}
+
+class _StudentLabState extends State<StudentLab> {
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      void filteration(String day, String place) {
+        filteredSessions = allItems
+            .where((m) => m.date == day && m.place == place)
+            .toList();
+      }
+
+      filteration(widget.item.date, widget.item.place);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +52,7 @@ class StudentLab extends StatelessWidget {
             children: [
               SizedBox(height: 10),
               Text(
-                "Lab Details | $selection",
+                "Lab Schedule",
                 style: TextStyle(
                   letterSpacing: 2,
                   color: Colors.white,
@@ -41,7 +60,6 @@ class StudentLab extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              Text("Lab Schedule", style: TextStyle(color: Colors.white)),
             ],
           ),
           elevation: 4,
@@ -49,7 +67,7 @@ class StudentLab extends StatelessWidget {
       ),
       body: Container(
         width: double.infinity,
-        height: 390,
+        height: 480,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -64,87 +82,52 @@ class StudentLab extends StatelessWidget {
             spacing: 15,
             children: [
               Text(
-                item.place,
+                widget.item.place,
                 style: TextStyle(fontSize: 35, fontWeight: FontWeight.w400),
               ),
-              Row(
-                children: [
-                  item.is_available == true
-                      ? Icon(Icons.circle, size: 15, color: Colors.green)
-                      : Icon(Icons.circle, size: 15, color: Colors.red),
-                  SizedBox(width: 10),
-                  Text(
-                    item.is_available == true ? "Available" : "Occupied",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                      color: item.is_available == true
-                          ? Colors.green
-                          : Colors.red,
-                    ),
-                  ),
-                ],
+              Expanded(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: filteredSessions.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                            width: 3,
+                            color: Color.fromARGB(255, 3, 132, 244),
+                          ),
+                        ),
+                        color: Color(0xFFf3f4f6),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: ListTile(
+                        title: Text(
+                          filteredSessions[index].instructor,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          "${filteredSessions[index].from} AM : ${filteredSessions[index].to} AM ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        trailing: Text(
+                          filteredSessions[index].isAvailable
+                              ? "Vacant"
+                              : "Occupied",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: filteredSessions[index].isAvailable
+                                ? Colors.green
+                                : Colors.red,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
-              item.is_available == true
-                  ? SizedBox()
-                  : Column(
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.access_time_sharp,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              "${item.from} AM -"
-                              " ${item.to} AM",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.person_outline,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              item.instructor,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.people_outline,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              item.classname,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
             ],
           ),
         ),
