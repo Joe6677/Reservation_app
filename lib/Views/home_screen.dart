@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_school_system/Models/tab_model.dart';
 import 'package:smart_school_system/Views/widgets/date_container.dart';
 import 'package:smart_school_system/Views/widgets/lab.dart';
-import 'package:smart_school_system/helpers/bottom_sheet_bar.dart';
+import 'package:smart_school_system/Helpers/bottom_sheet_bar.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -178,8 +178,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                           return Lab(
                             item: item,
                             labname: item.place,
-                            from: "${item.from} AM",
-                            to: "${item.to} AM",
+                            from: item.from,
+                            to: item.to,
                             instructor: item.instructor,
                             classname: item.classname,
                             t: item,

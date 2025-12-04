@@ -24,7 +24,7 @@ Future<bool?> showBottomChoiceSheet(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  "${msg}",
+                  msg,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,

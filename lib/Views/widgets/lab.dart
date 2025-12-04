@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_school_system/Models/tab_model.dart';
+import 'package:smart_school_system/ViewModel/book_place.dart';
 import 'package:smart_school_system/Views/instructor_lab.dart';
 import 'package:smart_school_system/Views/student_lab.dart';
 import 'package:smart_school_system/Views/widgets/role_container.dart';
@@ -31,6 +33,7 @@ class Lab extends StatefulWidget {
 class _LabState extends State<Lab> {
   @override
   Widget build(BuildContext context) {
+    final p = Provider.of<BookPlace>(context);
     return Padding(
       padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
       child: Container(
@@ -97,7 +100,7 @@ class _LabState extends State<Lab> {
                               ),
                               SizedBox(width: 10),
                               Text(
-                                "${widget.from} : ${widget.to}",
+                                "${widget.from} - ${widget.to}",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xFF4c5664),
@@ -146,6 +149,7 @@ class _LabState extends State<Lab> {
                   width: double.infinity,
                   child: TextButton(
                     onPressed: () {
+                      p.filteration(widget.t.date, widget.t.place);
                       if (selection == "Student") {
                         Navigator.push(
                           context,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school_system/Models/tab_model.dart';
+import 'package:smart_school_system/Views/book_lab.dart';
 
 // ignore: must_be_immutable
 class InstructorLab extends StatelessWidget {
@@ -109,7 +110,14 @@ class InstructorLab extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BookLab(item: item),
+                      ),
+                    );
+                  },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                     shape: RoundedRectangleBorder(

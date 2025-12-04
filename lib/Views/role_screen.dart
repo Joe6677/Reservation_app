@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:smart_school_system/Services/database_service.dart';
 import 'package:smart_school_system/Views/widgets/role_container.dart';
 
-class Role extends StatelessWidget {
+class Role extends StatefulWidget {
   const Role({super.key});
+
+  @override
+  State<Role> createState() => _RoleState();
+}
+
+class _RoleState extends State<Role> {
+  @override
+  void initState() {
+    super.initState();
+
+    // DatabaseService().createStudnts();
+    // DatabaseService().createInstructors();
+    DatabaseService().createAdmin();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,19 +62,24 @@ class Role extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
-        child: Column(
-          children: [
-            Center(
-              child: Text(
-                "Select Your Role",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Center(
+                child: Text(
+                  "Select Your Role",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            Role_Container(icon: Icons.co_present, role: "Instructor"),
-            SizedBox(height: 20),
-            Role_Container(icon: Icons.school, role: "Student"),
-          ],
+              SizedBox(height: 20),
+              Role_Container(icon: Icons.co_present, role: "Instructor"),
+              SizedBox(height: 20),
+              Role_Container(icon: Icons.school, role: "Student"),
+              SizedBox(height: 20),
+              Role_Container(icon: Icons.admin_panel_settings, role: "Admin"),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

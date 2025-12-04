@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school_system/RegX/regX.dart';
+import 'package:smart_school_system/Services/submit.dart';
 import 'package:smart_school_system/Views/widgets/formField.dart';
-import 'package:smart_school_system/helpers/bottom_sheet_bar.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ignore: must_be_immutable
 class SignIn extends StatelessWidget {
   SignIn({super.key});
   TextEditingController emailController = TextEditingController(
-    text: "yousefhesham2468@gmail.com",
+    text: 'yousefhesham2468@gmail.com',
   );
   TextEditingController passwordController = TextEditingController(
-    text: "Yousef2006#*",
+    text: "Yousef1911##**",
   );
   final formKey = GlobalKey<FormState>();
+
+  final supabase = Supabase.instance.client;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,7 +83,7 @@ class SignIn extends StatelessWidget {
                   Formfield(
                     icon: Icons.mail_outline_rounded,
                     controller: emailController,
-                    is_password: false,
+                    isPassword: false,
                     lable: "your.email@example.com",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -100,15 +103,15 @@ class SignIn extends StatelessWidget {
                   SizedBox(height: 10),
                   Formfield(
                     icon: Icons.lock_outline_rounded,
-                    is_obsecure: true,
+                    isObsecure: true,
                     controller: passwordController,
-                    is_password: true,
+                    isPassword: true,
                     lable: "Enter your password",
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please enter your password";
                       }
-                      if (value.length < 8) {
+                      if (value.length < 5) {
                         return "Password must be at least 8 characters long";
                       }
                       if (!isValidPassword(value)) {
@@ -122,7 +125,12 @@ class SignIn extends StatelessWidget {
                     width: double.infinity,
                     child: TextButton(
                       onPressed: () {
-                        submit(context);
+                        submit(
+                          context,
+                          emailController,
+                          passwordController,
+                          formKey,
+                        );
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 56, 110, 238),
@@ -147,17 +155,5 @@ class SignIn extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void submit(BuildContext context) async {
-    if (formKey.currentState!.validate()) {
-      await showBlockingSheet(context);
-      showSnackBar(
-        context,
-        "Login successful",
-        backgroundColor: Color.fromARGB(255, 56, 110, 238),
-      );
-      Navigator.pushReplacementNamed(context, '/home');
-    }
   }
 }

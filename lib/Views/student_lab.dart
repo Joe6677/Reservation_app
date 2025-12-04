@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:smart_school_system/Models/tab_model.dart';
+import 'package:smart_school_system/ViewModel/book_place.dart';
 
 // ignore: must_be_immutable
 class StudentLab extends StatefulWidget {
   StudentLab({super.key, required this.item});
   TabModel item;
-
   @override
   State<StudentLab> createState() => _StudentLabState();
 }
@@ -14,19 +15,14 @@ class _StudentLabState extends State<StudentLab> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      void filteration(String day, String place) {
-        filteredSessions = allItems
-            .where((m) => m.date == day && m.place == place)
-            .toList();
-      }
 
-      filteration(widget.item.date, widget.item.place);
-    });
+    // filteration(widget.item.date, widget.item.place);
   }
 
   @override
   Widget build(BuildContext context) {
+    final p = Provider.of<BookPlace>(context);
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 56, 110, 238),
       appBar: PreferredSize(
@@ -89,38 +85,37 @@ class _StudentLabState extends State<StudentLab> {
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: filteredSessions.length,
+                  itemCount: p.filteredSessions.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          left: BorderSide(
-                            width: 3,
-                            color: Color.fromARGB(255, 3, 132, 244),
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 15),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              width: 3,
+                              color: Color.fromARGB(255, 3, 132, 244),
+                            ),
                           ),
+                          color: Color(0xFFf3f4f6),
+                          borderRadius: BorderRadius.circular(15),
                         ),
-                        color: Color(0xFFf3f4f6),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          filteredSessions[index].instructor,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          "${filteredSessions[index].from} AM : ${filteredSessions[index].to} AM ",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        trailing: Text(
-                          filteredSessions[index].isAvailable
-                              ? "Vacant"
-                              : "Occupied",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: filteredSessions[index].isAvailable
-                                ? Colors.green
-                                : Colors.red,
-                            fontSize: 15,
+                        child: ListTile(
+                          title: Text(
+                            p.filteredSessions[index].instructor,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            "${p.filteredSessions[index].from} - ${p.filteredSessions[index].to}",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          trailing: Text(
+                            p.filteredSessions[index].classname,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(255, 56, 110, 238),
+                              fontSize: 15,
+                            ),
                           ),
                         ),
                       ),
