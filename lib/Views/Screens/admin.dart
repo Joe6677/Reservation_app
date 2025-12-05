@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Views/display_users.dart';
-import 'package:smart_school_system/Views/options.dart';
+import 'package:smart_school_system/Services/database_service.dart';
+import 'package:smart_school_system/Views/Screens/display_users.dart';
+import 'package:smart_school_system/Views/Screens/options.dart';
 
 class Admin extends StatefulWidget {
   const Admin({super.key});
@@ -13,6 +14,13 @@ class _AdminState extends State<Admin> {
   int currentIndex = 0;
   final List<Widget> screens = [Options(), DisplayUsers()];
   @override
+  void initState() {
+    super.initState();
+    DatabaseService().fetchInstructors();
+    DatabaseService().fetchStudents();
+  }
+
+  
   Widget build(BuildContext context) {
     return Scaffold(
       body: screens[currentIndex],
@@ -32,13 +40,13 @@ class _AdminState extends State<Admin> {
         selectedLabelStyle: TextStyle(color: Colors.red),
         items: [
           BottomNavigationBarItem(
-            icon: _navIcon(Icons.manage_accounts, false),
-            activeIcon: _navIcon(Icons.manage_accounts, true),
+            icon: navIcon(Icons.manage_accounts, false),
+            activeIcon: navIcon(Icons.manage_accounts, true),
             label: 'Actions',
           ),
           BottomNavigationBarItem(
-            icon: _navIcon(Icons.assignment, false),
-            activeIcon: _navIcon(Icons.assignment, true),
+            icon: navIcon(Icons.assignment, false),
+            activeIcon: navIcon(Icons.assignment, true),
             label: 'Community',
           ),
         ],
@@ -46,7 +54,7 @@ class _AdminState extends State<Admin> {
     );
   }
 
-  Widget _navIcon(IconData icon, bool selected) {
+  Widget navIcon(IconData icon, bool selected) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       padding: const EdgeInsets.all(10),

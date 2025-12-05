@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_school_system/ViewModel/book_place.dart';
-import 'package:smart_school_system/Views/admin.dart';
-import 'package:smart_school_system/Views/home_screen.dart';
-import 'package:smart_school_system/Views/splash_screen.dart';
-import 'package:smart_school_system/Views/role_screen.dart';
-import 'package:smart_school_system/Views/sign_in_screen.dart';
+import 'package:smart_school_system/Views/Screens/admin.dart';
+import 'package:smart_school_system/Views/Screens/home_screen.dart';
+import 'package:smart_school_system/Views/Screens/splash_screen.dart';
+import 'package:smart_school_system/Views/Screens/role_screen.dart';
+import 'package:smart_school_system/Views/Screens/sign_in_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {

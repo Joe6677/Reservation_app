@@ -5,10 +5,10 @@ class DatabaseService {
 
   Future createStudnts() async {
     await supabase.from('Students').insert({
-      'std_id': "43d57b21-af8b-4b4c-9f13-1c3283c289e5",
-      'std_name': "Yousef Hesham",
-      'std_email': "yousefhesham2468@gmail.com",
-      'std_password': "Yousef1911##**",
+      'std_id': "fedb0fb2-b0be-4a3c-b508-95c3863cd376",
+      'std_name': "Steve Mohammed",
+      'std_email': "stevemohammed@gmail.com",
+      'std_password': "Steve2007#",
       'class_id': 11,
     });
   }
@@ -29,5 +29,29 @@ class DatabaseService {
       'admin_email': "admin123@gmail.com",
       'admin_password': "Admin123#",
     });
+  }
+
+  Future createClass() async {
+    await supabase.from('Classes').insert([
+      {'class_id': "11", 'class_name': "5A"},
+      {'class_id': "12", 'class_name': "5B"},
+    ]);
+  }
+
+  List<Map<String, dynamic>> students = [];
+  List<Map<String, dynamic>> instructors = [];
+
+  Future<List<Map<String, dynamic>>> fetchStudents() async {
+    final response = await Supabase.instance.client.from('Students').select();
+    students = List<Map<String, dynamic>>.from(response);
+    return students;
+  }
+
+  Future<List<Map<String, dynamic>>> fetchInstructors() async {
+    final response = await Supabase.instance.client
+        .from('Instructors')
+        .select();
+    instructors = List<Map<String, dynamic>>.from(response);
+    return instructors;
   }
 }

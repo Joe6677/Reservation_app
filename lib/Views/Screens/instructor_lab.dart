@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school_system/Models/tab_model.dart';
-import 'package:smart_school_system/Views/book_lab.dart';
+import 'package:smart_school_system/Views/Screens/book_lab.dart';
 
 // ignore: must_be_immutable
 class InstructorLab extends StatelessWidget {

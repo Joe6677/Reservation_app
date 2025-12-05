@@ -8,10 +8,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class SignIn extends StatelessWidget {
   SignIn({super.key});
   TextEditingController emailController = TextEditingController(
-    text: 'yousefhesham2468@gmail.com',
+    text: 'admin123@gmail.com',
   );
   TextEditingController passwordController = TextEditingController(
-    text: "Yousef1911##**",
+    text: "Admin123#",
   );
   final formKey = GlobalKey<FormState>();
 

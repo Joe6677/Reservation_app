@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_school_system/Models/tab_model.dart';
 import 'package:smart_school_system/ViewModel/book_place.dart';
-import 'package:smart_school_system/Views/instructor_lab.dart';
-import 'package:smart_school_system/Views/student_lab.dart';
+import 'package:smart_school_system/Views/Screens/instructor_lab.dart';
+import 'package:smart_school_system/Views/Screens/student_lab.dart';
 import 'package:smart_school_system/Views/widgets/role_container.dart';
 
 // ignore: must_be_immutable
