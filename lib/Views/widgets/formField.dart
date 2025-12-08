@@ -8,6 +8,7 @@ class Formfield extends StatefulWidget {
   String? Function(String?) validator;
   TextEditingController controller = TextEditingController();
   IconData icon;
+  bool enabled = true;
   Color borderColor;
   Formfield({
     super.key,
@@ -15,6 +16,7 @@ class Formfield extends StatefulWidget {
     this.isPassword,
     this.isObsecure = false,
     required this.validator,
+    this.enabled = true,
     required this.controller,
     required this.icon,
     this.borderColor = const Color.fromARGB(255, 56, 110, 238),
@@ -28,10 +30,16 @@ class _FormfieldState extends State<Formfield> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: widget.enabled,
       controller: widget.controller,
       validator: widget.validator,
       obscureText: widget.isObsecure,
-      style: TextStyle(color: Color(0xFF0a2f50), fontWeight: FontWeight.bold),
+      style: TextStyle(
+        color: widget.enabled == true
+            ? Colors.black
+            : const Color.fromARGB(255, 99, 99, 99),
+        fontWeight: FontWeight.bold,
+      ),
       cursorColor: Colors.black,
       decoration: InputDecoration(
         errorMaxLines: 2,

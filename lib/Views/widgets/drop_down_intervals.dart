@@ -1,66 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:smart_school_system/Models/tab_model.dart';
-import 'package:smart_school_system/ViewModel/book_place.dart';
+import 'package:smart_school_system/Models/bookingModel.dart';
+import 'package:smart_school_system/Models/timeSlot.dart';
 
 class TimeSlotDropdown extends StatefulWidget {
-  const TimeSlotDropdown({super.key});
+  final List<BookingModel> bookings;
+  final String day;
+  final String placeName;
+
+  final List<TimeIntervals> timeSlots = [
+    TimeIntervals(from: "8:00", to: "8:50"),
+    TimeIntervals(from: "8:50", to: "9:40"),
+    TimeIntervals(from: "9:40", to: "10:30"),
+    TimeIntervals(from: "11:00", to: "11:50"),
+    TimeIntervals(from: "11:50", to: "12:40"),
+    TimeIntervals(from: "12:40", to: "1:30"),
+    TimeIntervals(from: "1:50", to: "2:40"),
+    TimeIntervals(from: "2:40", to: "3:30"),
+  ];
+
+  TimeSlotDropdown({
+    super.key,
+    required this.bookings,
+    required this.day,
+    required this.placeName,
+  });
 
   @override
   State<TimeSlotDropdown> createState() => TimeSlotDropdownState();
 }
 
 class TimeSlotDropdownState extends State<TimeSlotDropdown> {
-  TabModel? selected;
+  TimeIntervals? selected;
+
+  bool isSlotBusy(TimeIntervals slot) {
+    return widget.bookings.any(
+      (b) =>
+          b.day == widget.day &&
+          b.place == widget.placeName &&
+          b.from == slot.from &&
+          b.to == slot.to,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final p = Provider.of<BookPlace>(context);
-    return DropdownButtonFormField<TabModel>(
+    return DropdownButtonFormField<TimeIntervals>(
       initialValue: selected,
       isExpanded: true,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color(0xfff3f4f6),
+        fillColor: const Color(0xfff3f4f6),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
         ),
       ),
-      items: p.filteredSessions.map((slot) {
-        final enabled = slot.isAvailable;
+      items: widget.timeSlots.map((slot) {
+        final busy = isSlotBusy(slot);
 
-        return DropdownMenuItem<TabModel>(
+        return DropdownMenuItem<TimeIntervals>(
           value: slot,
-          enabled: enabled,
+          enabled: !busy,
           child: Row(
             children: [
               Expanded(
                 child: Text(
                   "${slot.from} - ${slot.to}",
-                  style: TextStyle(
-                    color: !enabled ? Colors.grey.shade600 : Colors.black,
-                  ),
+                  style: TextStyle(color: busy ? Colors.grey : Colors.black),
                 ),
               ),
-              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: !enabled
-                      ? const Color(0xffffe1e1)
-                      : const Color(0xffe0ffe6),
-                  borderRadius: BorderRadius.circular(999),
+                  color: busy ? Colors.red.shade100 : Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(50),
                 ),
                 child: Text(
-                  !enabled ? 'Occupied' : 'Vacant',
+                  busy ? "Occupied" : "Vacant",
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: !enabled ? Colors.red : Colors.green,
+                    color: busy ? Colors.red : Colors.green,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),

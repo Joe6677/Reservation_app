@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Models/tab_model.dart';
+import 'package:smart_school_system/Models/bookingModel.dart';
+import 'package:smart_school_system/Models/placesModel.dart';
 import 'package:smart_school_system/Views/widgets/date_container.dart';
 import 'package:smart_school_system/Views/widgets/lab.dart';
 import 'package:smart_school_system/Helpers/bottom_sheet_bar.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -14,9 +16,23 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   late TabController dateController;
   late TabController typeController;
-  final List<String> dateTabs = ['16', '17', '18', '19', '20'];
+
+  List<BookingModel> allItems = [];
+  List<PlacesModel> places = [
+    PlacesModel(place_type: "Lab", place_name: "Lab A"),
+    PlacesModel(place_type: "Lab", place_name: "Lab C"),
+    PlacesModel(place_type: "Lab", place_name: "Lab D"),
+    PlacesModel(place_type: "Lab", place_name: "Lab Physics"),
+    PlacesModel(place_type: "Class", place_name: "5A"),
+    PlacesModel(place_type: "Class", place_name: "5B"),
+    PlacesModel(place_type: "Class", place_name: "4A"),
+    PlacesModel(place_type: "Class", place_name: "4B"),
+    PlacesModel(place_type: "P.E", place_name: "P.E"),
+  ];
+
+  final List<String> dateTabs = ['7/12', '8/12', '9/12', '10/12', '11/12'];
   final List<String> days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu'];
-  final List<String> typeTabs = ['All', 'Lab', 'Class', 'P.E.'];
+  final List<String> typeTabs = ['All', 'Lab', 'Class', 'P.E'];
 
   @override
   void initState() {
@@ -24,26 +40,30 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     dateController = TabController(length: dateTabs.length, vsync: this);
     typeController = TabController(length: typeTabs.length, vsync: this);
 
-    dateController.addListener(_onFilterChanged);
-    typeController.addListener(_onFilterChanged);
+    dateController.addListener(onFilterChanged);
+    typeController.addListener(onFilterChanged);
   }
 
-  void _onFilterChanged() {
+  void onFilterChanged() {
     if (!dateController.indexIsChanging && !typeController.indexIsChanging) {
-      setState(() {});
+      setState(() {
+        print(type);
+      });
     }
   }
 
-  List<TabModel> get filteredItems {
-    final selectedDate = dateTabs[dateController.index];
+  String? type;
+  String? day;
+  List<PlacesModel> get filteredItems {
     final selectedType = typeTabs[typeController.index];
-
-    return allItems.where((item) {
-      final matchDate = item.date == selectedDate;
-      final matchType = (selectedType == 'All')
+    day = dateTabs[dateController.index];
+    type = selectedType;
+    return places.where((item) {
+      final matchType = selectedType == 'All'
           ? true
-          : item.type == selectedType;
-      return matchDate && matchType;
+          : item.place_type == selectedType;
+
+      return matchType;
     }).toList();
   }
 
@@ -73,11 +93,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 Color.fromARGB(255, 56, 110, 238),
               );
               if (result == true) {
+                await Supabase.instance.client.auth.signOut();
                 await showBlockingSheet(context);
-                Navigator.pushReplacementNamed(context, "/signin");
+                Navigator.pushReplacementNamed(context, "/role");
               }
             },
-            icon: Icon(Icons.login_outlined, color: Colors.white, size: 25),
+            icon: Icon(Icons.logout, color: Colors.white, size: 25),
           ),
         ],
       ),
@@ -111,7 +132,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     width: 70,
                     child: DateContainer(
                       day: days[dateTabs.indexOf(t)],
-                      month: "Nov",
                       daynum: t,
                     ),
                   );
@@ -172,17 +192,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       )
                     : ListView.separated(
                         itemCount: filteredItems.length,
-                        separatorBuilder: (_, _) => SizedBox(height: 8),
+                        separatorBuilder: (_, __) => SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           final item = filteredItems[index];
                           return Lab(
-                            item: item,
-                            labname: item.place,
-                            from: item.from,
-                            to: item.to,
-                            instructor: item.instructor,
-                            classname: item.classname,
-                            t: item,
+                            place: item,
+                            day: day ?? '7/12',
+                            labName: item.place_name,
+                            placeType: item.place_type,
                           );
                         },
                       ),

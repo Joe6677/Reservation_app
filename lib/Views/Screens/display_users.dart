@@ -21,10 +21,6 @@ class _DisplayUsersState extends State<DisplayUsers> {
     loadData();
   }
 
-  void dispose() {
-    super.dispose();
-  }
-
   Future<void> loadData() async {
     setState(() {
       loading = true;

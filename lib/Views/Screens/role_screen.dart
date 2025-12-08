@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Services/database_service.dart';
 import 'package:smart_school_system/Views/widgets/role_container.dart';
 
 class Role extends StatefulWidget {
@@ -14,9 +13,7 @@ class _RoleState extends State<Role> {
   void initState() {
     super.initState();
 
-    // DatabaseService().createStudnts();
-    // DatabaseService().createInstructors();
-    // DatabaseService().createStudnts();
+
   }
 
   @override

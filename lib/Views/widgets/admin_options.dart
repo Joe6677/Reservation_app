@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+String? option;
+
 // ignore: must_be_immutable
 class AdminOption extends StatelessWidget {
   String command;
@@ -12,7 +14,16 @@ class AdminOption extends StatelessWidget {
       height: 170,
       width: 250,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          option = command;
+          if (option == "Add User") {
+            Navigator.pushNamed(context, '/adduser');
+          } else if (option == "Edit User") {
+            Navigator.pushNamed(context, '/modifyusers');
+          } else if (option == "Delete User") {
+            Navigator.pushNamed(context, '/deleteuser');
+          }
+        },
         child: Card(
           elevation: 2,
           child: Center(

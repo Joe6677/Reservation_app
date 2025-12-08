@@ -1,56 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Models/tab_model.dart';
+import 'package:smart_school_system/Models/bookingModel.dart';
+import 'package:smart_school_system/Models/placesModel.dart';
+import 'package:smart_school_system/Services/database_service.dart';
 import 'package:smart_school_system/Views/Screens/book_lab.dart';
 
-// ignore: must_be_immutable
-class InstructorLab extends StatelessWidget {
-  InstructorLab({super.key, required this.item});
-  TabModel item;
+class InstructorLab extends StatefulWidget {
+  final PlacesModel item;
+  final String day;
+  String placeName;
+  String placeType;
+  BookingModel booking = BookingModel(
+    bookId: 0,
+    instructor: '',
+    classname: '',
+    place: '',
+    from: '',
+    to: '',
+    placeType: '',
+    day: '',
+    insName: '',
+  );
+
+  InstructorLab({
+    super.key,
+    required this.item,
+    required this.day,
+    required this.placeName,
+    required this.placeType,
+  });
+
+  @override
+  State<InstructorLab> createState() => _InstructorLabState();
+}
+
+class _InstructorLabState extends State<InstructorLab> {
+  List<BookingModel> allItems = [];
+  List<BookingModel> filteredSessions = [];
+
+  Future<void> loadBookings() async {
+    allItems = await DatabaseService().fetchBookings();
+
+    filteration(widget.day, widget.placeName);
+
+    setState(() {});
+  }
+
+  void filteration(String day, String place) {
+    filteredSessions = allItems
+        .where((m) => m.day == day && m.place == place)
+        .toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadBookings();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 56, 110, 238),
+      backgroundColor: const Color.fromARGB(255, 56, 110, 238),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(280),
+        preferredSize: const Size.fromHeight(250),
         child: AppBar(
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.more_vert, color: Colors.white),
-            ),
-          ],
+          backgroundColor: const Color.fromARGB(255, 56, 110, 238),
           leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
           ),
-          backgroundColor: Color.fromARGB(255, 56, 110, 238),
           centerTitle: true,
-          title: null,
-          flexibleSpace: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 10),
-              Text(
-                "${item.type} Schedule",
-                style: TextStyle(
-                  letterSpacing: 2,
-                  color: Colors.white,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
+          title: Text(
+            "${widget.item.place_type} Schedule",
+            style: const TextStyle(
+              fontSize: 30,
+              letterSpacing: 2,
+              color: Colors.white,
+            ),
           ),
-          elevation: 4,
         ),
       ),
       body: Container(
         width: double.infinity,
-        height: 450,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(30),
@@ -58,55 +90,62 @@ class InstructorLab extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+          padding: const EdgeInsets.all(20),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              item.type == "Class"
-                  ? Row(
-                      children: [
-                        Text(
-                          "${item.type} ${item.place}",
-                          style: TextStyle(
-                            fontSize: 35,
-                            fontWeight: FontWeight.w400,
-                          ),
+              Expanded(
+                child: filteredSessions.isEmpty
+                    ? const Center(
+                        child: Text(
+                          "No Sessions Today",
+                          style: TextStyle(fontSize: 18),
                         ),
-                      ],
-                    )
-                  : Text(
-                      item.place,
-                      style: TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.w400,
+                      )
+                    : ListView.builder(
+                        itemCount: filteredSessions.length,
+
+                        itemBuilder: (context, index) {
+                          widget.booking = filteredSessions[index];
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xfff3f4f6),
+                              borderRadius: BorderRadius.circular(15),
+                              border: const Border(
+                                left: BorderSide(
+                                  color: Color.fromARGB(255, 3, 132, 244),
+                                  width: 4,
+                                ),
+                              ),
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                widget.booking.insName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "${widget.booking.from} - ${widget.booking.to}",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              trailing: Text(
+                                widget.booking.classname,
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 56, 110, 238),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Icon(
-                    Icons.circle,
-                    color: item.isAvailable == true ? Colors.green : Colors.red,
-                    size: 10,
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    item.isAvailable == true ? "Vacant" : "Occupied",
-                    style: item.isAvailable == true
-                        ? TextStyle(
-                            color: Colors.green,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                          )
-                        : TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 18,
-                          ),
-                  ),
-                ],
               ),
-              SizedBox(height: 70),
+              const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
@@ -114,38 +153,25 @@ class InstructorLab extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BookLab(item: item),
+                        builder: (_) => BookLab(
+                          item: widget.booking,
+                          placeName: widget.placeName,
+                          placeType: widget.placeType,
+                          day: widget.day,
+                        ),
                       ),
                     );
                   },
                   style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: const Color.fromARGB(255, 56, 110, 238),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    backgroundColor: Color.fromARGB(255, 56, 110, 238),
                   ),
                   child: Text(
-                    "Book ${item.type}",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    backgroundColor: Color(0xFFf3f4f6),
-                  ),
-                  child: Text(
-                    "Scan Attendance",
-                    style: TextStyle(color: Color.fromARGB(255, 56, 110, 238)),
+                    "Book ${widget.item.place_type}",
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ),

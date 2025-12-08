@@ -10,7 +10,6 @@ void submit(
   GlobalKey<FormState> formKey,
 ) async {
   final supabase = Supabase.instance.client;
-
   if (formKey.currentState!.validate()) {
     try {
       await Supabase.instance.client.auth.signInWithPassword(
@@ -46,7 +45,9 @@ void submit(
           "Login successful",
           backgroundColor: Color.fromARGB(255, 56, 110, 238),
         );
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil('/home', (route) => false);
         return;
       } else {
         return showSnackBar(
@@ -68,7 +69,9 @@ void submit(
           "Login successful",
           backgroundColor: Color.fromARGB(255, 56, 110, 238),
         );
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil('/home', (route) => false);
         return;
       } else {
         return showSnackBar(
@@ -114,7 +117,9 @@ void submit(
           "Login successful",
           backgroundColor: Color.fromARGB(255, 56, 110, 238),
         );
-        Navigator.pushReplacementNamed(context, '/admin');
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil('/admin', (route) => false);
         return;
       } else {
         return showSnackBar(

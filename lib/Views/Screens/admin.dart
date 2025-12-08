@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smart_school_system/Services/database_service.dart';
 import 'package:smart_school_system/Views/Screens/display_users.dart';
 import 'package:smart_school_system/Views/Screens/options.dart';
+import 'package:smart_school_system/Helpers/bottom_sheet_bar.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Admin extends StatefulWidget {
   const Admin({super.key});
@@ -20,9 +22,33 @@ class _AdminState extends State<Admin> {
     DatabaseService().fetchStudents();
   }
 
-  
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 56, 110, 238),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.white),
+            onPressed: () async {
+              final result = await showBottomChoiceSheet(
+                context,
+                "Are you sure you want to Logout?",
+                Colors.red,
+                Color.fromARGB(255, 56, 110, 238),
+              );
+
+              if (result == true) {
+                await Supabase.instance.client.auth.signOut();
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil("/role", (route) => false);
+              }
+            },
+          ),
+        ],
+      ),
       body: screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,

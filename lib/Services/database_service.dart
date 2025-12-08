@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:smart_school_system/Helpers/bottom_sheet_bar.dart';
+import 'package:smart_school_system/Models/bookingModel.dart';
+import 'package:smart_school_system/Models/placesModel.dart';
+import 'package:smart_school_system/Views/widgets/drop_down_intervals.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DatabaseService {
@@ -5,11 +10,11 @@ class DatabaseService {
 
   Future createStudnts() async {
     await supabase.from('Students').insert({
-      'std_id': "fedb0fb2-b0be-4a3c-b508-95c3863cd376",
-      'std_name': "Steve Mohammed",
-      'std_email': "stevemohammed@gmail.com",
-      'std_password': "Steve2007#",
-      'class_id': 11,
+      'std_id': "30d95f02-f7fd-4a87-ae68-425c4b199200",
+      'std_name': "Abdo",
+      'std_email': "abdo3112006mam@gmail.com",
+      'std_password': "AO2006",
+      'class_id': "5A",
     });
   }
 
@@ -24,7 +29,7 @@ class DatabaseService {
 
   Future createAdmin() async {
     await supabase.from('Admins').insert({
-      'admin_id': "bb05af18-d3bd-4a11-bdb6-e981fdf3a96b",
+      'admin_id': "124d8ab3-f222-4abb-9911-6c3843729140",
       'admin_name': "Basma Ahmed",
       'admin_email': "admin123@gmail.com",
       'admin_password': "Admin123#",
@@ -54,4 +59,169 @@ class DatabaseService {
     instructors = List<Map<String, dynamic>>.from(response);
     return instructors;
   }
+
+  Future<void> addStudent({
+    required String email,
+    required String password,
+    required String username,
+    required String classId,
+  }) async {
+    final authRes = await supabase.auth.signUp(
+      email: email,
+      password: password,
+    );
+
+    final String userId = authRes.user!.id;
+
+    await supabase.from('Students').insert({
+      'std_id': userId,
+      'std_name': username,
+      'std_email': email,
+      'std_password': password,
+      'class_id': classId,
+    });
+  }
+
+  Future<void> addInstructor({
+    required String email,
+    required String password,
+    required String fullName,
+  }) async {
+    final authRes = await supabase.auth.signUp(
+      email: email,
+      password: password,
+    );
+
+    final String userId = authRes.user!.id;
+
+    await supabase.from('Instructors').insert({
+      'ins_id': userId,
+      'ins_name': fullName,
+      'ins_email': email,
+      'ins_password': password,
+    });
+  }
+
+  Future<void> updateStudent({
+    required String userId,
+    required String fullName,
+    required String classId,
+  }) async {
+    await supabase
+        .from('Students')
+        .update({'std_name': fullName, 'class_id': classId})
+        .eq('std_id', userId);
+  }
+
+  Future<void> updateInstructor({
+    required String userId,
+    required String fullName,
+  }) async {
+    await supabase
+        .from('Instructors')
+        .update({'ins_name': fullName})
+        .eq('ins_id', userId);
+  }
+
+  Future<Map<String, dynamic>> loadInstructor(String userId) async {
+    final response = await Supabase.instance.client
+        .from('Instructors')
+        .select()
+        .eq('ins_id', userId)
+        .single();
+    return response;
+  }
+
+  Future<Map<String, dynamic>> loadStudent(String userId) async {
+    final response = await Supabase.instance.client
+        .from('Students')
+        .select()
+        .eq('std_id', userId)
+        .single();
+    return response;
+  }
+
+  Future<void> deleteStudent(String studentId) async {
+    await supabase.from('Students').delete().match({'std_id': studentId});
+  }
+
+  Future<void> deleteInstructor(String InstructorId) async {
+    await supabase.from('Instructors').delete().match({'ins_id': InstructorId});
+  }
+
+  Future<List<BookingModel>> fetchBookings() async {
+    final data = await supabase
+        .from('Booking')
+        .select('* , Places(place_type) , Instructors(ins_name)')
+        .order('book_id', ascending: true);
+
+    return data.map<BookingModel>((e) => BookingModel.fromMap(e)).toList();
+  }
+
+  Future<bool> classExists(String classId) async {
+    final response = await Supabase.instance.client
+        .from('Classes')
+        .select('class_id')
+        .eq('class_id', classId)
+        .maybeSingle();
+    return response != null;
+  }
+
+  Future<void> confirmBooking(
+    GlobalKey<FormState> formkey,
+    GlobalKey<TimeSlotDropdownState> timeSlotKey,
+    BuildContext context,
+    TextEditingController classcontroller,
+    String day,
+    String place,
+  ) async {
+    if (!formkey.currentState!.validate()) return;
+
+    final slot = timeSlotKey.currentState?.selected;
+    if (slot == null) {
+      showSnackBar(
+        context,
+        "Please choose a time slot",
+        backgroundColor: Colors.red,
+      );
+      return;
+    }
+
+    if (!await classExists(classcontroller.text.trim())) {
+      showSnackBar(
+        context,
+        "Class does not exist",
+        backgroundColor: Colors.red,
+      );
+      return;
+    }
+
+    final userId = Supabase.instance.client.auth.currentUser!.id;
+
+    try {
+      await Supabase.instance.client.from('Booking').insert({
+        'ins_id': userId,
+        'class_id': classcontroller.text.trim(),
+        'place_id': place,
+        'day': day,
+        '_from': slot.from,
+        '_to': slot.to,
+      });
+
+      showSnackBar(
+        context,
+        "Booked Successfully",
+        backgroundColor: Color.fromARGB(255, 56, 110, 238),
+      );
+      Navigator.pop(context);
+    } catch (e) {
+      showSnackBar(context, "Booking failed: $e", backgroundColor: Colors.red);
+    }
+  }
+
+  // List<PlacesModel> places = [];
+  // Future<List<PlacesModel>> fetchPlaces() async {
+  //   final response = await supabase.from('Places').select();
+  //   return response.map<PlacesModel>((e) => .fromMap(e)).toList();
+  // }
 }

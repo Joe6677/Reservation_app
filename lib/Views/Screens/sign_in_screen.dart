@@ -8,10 +8,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class SignIn extends StatelessWidget {
   SignIn({super.key});
   TextEditingController emailController = TextEditingController(
-    text: 'admin123@gmail.com',
+    text: 'drmoaazahmed@gmail.com',
   );
   TextEditingController passwordController = TextEditingController(
-    text: "Admin123#",
+    text: "MZ222007",
   );
   final formKey = GlobalKey<FormState>();
 
@@ -54,101 +54,109 @@ class SignIn extends StatelessWidget {
       ),
       body: Form(
         key: formKey,
-        child: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            height: 700,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(25),
-                topLeft: Radius.circular(25),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Container(
+              width: double.infinity,
+              height: 700,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(25),
+                  topLeft: Radius.circular(25),
+                ),
               ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Sign In",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(height: 30),
-                  Text(
-                    "Email",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(height: 10),
-                  Formfield(
-                    icon: Icons.mail_outline_rounded,
-                    controller: emailController,
-                    isPassword: false,
-                    lable: "your.email@example.com",
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter your email";
-                      }
-                      if (!isvalidemail(value)) {
-                        return "Please enter a valid email";
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    "Password",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                  ),
-                  SizedBox(height: 10),
-                  Formfield(
-                    icon: Icons.lock_outline_rounded,
-                    isObsecure: true,
-                    controller: passwordController,
-                    isPassword: true,
-                    lable: "Enter your password",
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter your password";
-                      }
-                      if (value.length < 5) {
-                        return "Password must be at least 8 characters long";
-                      }
-                      if (!isValidPassword(value)) {
-                        return "Password must contain at least one uppercase letter, one number, and one special character";
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: TextButton(
-                      onPressed: () {
-                        submit(
-                          context,
-                          emailController,
-                          passwordController,
-                          formKey,
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 56, 110, 238),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Sign In",
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w400,
                       ),
-                      child: Text(
-                        "Login",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white,
+                    ),
+                    SizedBox(height: 30),
+                    Text(
+                      "Email",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Formfield(
+                      icon: Icons.mail_outline_rounded,
+                      controller: emailController,
+                      isPassword: false,
+                      lable: "your.email@example.com",
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter your email";
+                        }
+                        if (!isvalidemail(value)) {
+                          return "Please enter a valid email";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    Text(
+                      "Password",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Formfield(
+                      icon: Icons.lock_outline_rounded,
+                      isObsecure: true,
+                      controller: passwordController,
+                      isPassword: true,
+                      lable: "Enter your password",
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter your password";
+                        }
+                        if (value.length < 5) {
+                          return "Password must be at least 5 characters long";
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () {
+                          submit(
+                            context,
+                            emailController,
+                            passwordController,
+                            formKey,
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 56, 110, 238),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

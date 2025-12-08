@@ -112,3 +112,31 @@ void showSnackBar(
       ),
     );
 }
+
+Future<bool?> showDeleteConfirmation(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      return AlertDialog(
+        title: Text("Confirm Delete"),
+        content: Text(
+          "Are you sure you want to delete this user? This action cannot be undone.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            child: const Text("Delete", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      );
+    },
+  );
+}

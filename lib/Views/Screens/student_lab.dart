@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:smart_school_system/Models/tab_model.dart';
-import 'package:smart_school_system/ViewModel/book_place.dart';
+import 'package:smart_school_system/Models/bookingModel.dart';
+import 'package:smart_school_system/Models/placesModel.dart';
+import 'package:smart_school_system/Services/database_service.dart';
 
 // ignore: must_be_immutable
 class StudentLab extends StatefulWidget {
-  StudentLab({super.key, required this.item});
-  TabModel item;
+  StudentLab({super.key, required this.item, required this.day});
+  PlacesModel item;
+  String day;
   @override
   State<StudentLab> createState() => _StudentLabState();
 }
 
 class _StudentLabState extends State<StudentLab> {
+  List<BookingModel> allItems = [];
+  Future<void> loadBookings() async {
+    allItems = await DatabaseService().fetchBookings();
+    filteration(widget.day, widget.item.place_name);
+    setState(() {});
+  }
+
+  List<BookingModel> filteredSessions = [];
+  void filteration(String day, String place) {
+    filteredSessions = allItems
+        .where((m) => m.day == day && m.place == place)
+        .toList();
+  }
+
   @override
   void initState() {
     super.initState();
-
-    // filteration(widget.item.date, widget.item.place);
+    loadBookings();
   }
 
   @override
   Widget build(BuildContext context) {
-    final p = Provider.of<BookPlace>(context);
-
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 56, 110, 238),
       appBar: PreferredSize(
@@ -48,7 +60,7 @@ class _StudentLabState extends State<StudentLab> {
             children: [
               SizedBox(height: 10),
               Text(
-                "Lab Schedule",
+                "${widget.item.place_type} schedule",
                 style: TextStyle(
                   letterSpacing: 2,
                   color: Colors.white,
@@ -63,7 +75,7 @@ class _StudentLabState extends State<StudentLab> {
       ),
       body: Container(
         width: double.infinity,
-        height: 480,
+        height: 570,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -78,14 +90,14 @@ class _StudentLabState extends State<StudentLab> {
             spacing: 15,
             children: [
               Text(
-                widget.item.place,
+                widget.item.place_name,
                 style: TextStyle(fontSize: 35, fontWeight: FontWeight.w400),
               ),
               Expanded(
                 child: ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: p.filteredSessions.length,
+                  itemCount: filteredSessions.length,
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 15),
@@ -102,15 +114,15 @@ class _StudentLabState extends State<StudentLab> {
                         ),
                         child: ListTile(
                           title: Text(
-                            p.filteredSessions[index].instructor,
+                            filteredSessions[index].insName,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                            "${p.filteredSessions[index].from} - ${p.filteredSessions[index].to}",
+                            "${filteredSessions[index].from} - ${filteredSessions[index].to}",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           trailing: Text(
-                            p.filteredSessions[index].classname,
+                            filteredSessions[index].classname,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Color.fromARGB(255, 56, 110, 238),
