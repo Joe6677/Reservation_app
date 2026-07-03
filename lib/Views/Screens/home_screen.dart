@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smart_school_system/Models/bookingModel.dart';
 import 'package:smart_school_system/Models/placesModel.dart';
 import 'package:smart_school_system/Views/widgets/date_container.dart';
 import 'package:smart_school_system/Views/widgets/lab.dart';
@@ -17,7 +16,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   late TabController dateController;
   late TabController typeController;
 
-  List<BookingModel> allItems = [];
   List<PlacesModel> places = [
     PlacesModel(place_type: "Lab", place_name: "Lab A"),
     PlacesModel(place_type: "Lab", place_name: "Lab C"),
@@ -46,17 +44,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   void onFilterChanged() {
     if (!dateController.indexIsChanging && !typeController.indexIsChanging) {
-      setState(() {
-        print(type);
-      });
+      setState(() {});
     }
   }
 
   String? type;
   String? day;
   List<PlacesModel> get filteredItems {
-    final selectedType = typeTabs[typeController.index];
-    day = dateTabs[dateController.index];
+    final selectedType = typeTabs[typeController.index]; // All
+    day = dateTabs[dateController.index]; // 7/12
     type = selectedType;
     return places.where((item) {
       final matchType = selectedType == 'All'
@@ -192,7 +188,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       )
                     : ListView.separated(
                         itemCount: filteredItems.length,
-                        separatorBuilder: (_, __) => SizedBox(height: 8),
+                        separatorBuilder: (_, _) => SizedBox(height: 8),
                         itemBuilder: (context, index) {
                           final item = filteredItems[index];
                           return Lab(

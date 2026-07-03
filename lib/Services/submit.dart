@@ -13,8 +13,8 @@ void submit(
   if (formKey.currentState!.validate()) {
     try {
       await Supabase.instance.client.auth.signInWithPassword(
-        email: emailController.text,
-        password: passwordController.text,
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
       );
     } on AuthException {
       return showSnackBar(
@@ -77,29 +77,6 @@ void submit(
         return showSnackBar(
           context,
           "You are not an Instructor",
-          backgroundColor: Colors.red,
-        );
-      }
-    } else if (selection == "Student") {
-      final student = await supabase
-          .from('Students')
-          .select('std_id')
-          .eq('std_id', userId)
-          .maybeSingle();
-
-      if (student != null) {
-        await showBlockingSheet(context);
-        showSnackBar(
-          context,
-          "Login successful",
-          backgroundColor: Color.fromARGB(255, 56, 110, 238),
-        );
-        Navigator.pushReplacementNamed(context, '/home');
-        return;
-      } else {
-        return showSnackBar(
-          context,
-          "You are not a Student",
           backgroundColor: Colors.red,
         );
       }

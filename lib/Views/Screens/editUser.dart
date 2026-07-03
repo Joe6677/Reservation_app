@@ -38,10 +38,10 @@ class _EditUserState extends State<EditUser> {
 
     if (widget.type == "student") {
       changed =
-          nameController.text != (originalUser!['std_name'] ?? '') ||
-          classController.text != (originalUser!['class_id'] ?? '');
+          nameController.text.trim() != (originalUser!['std_name'] ?? '') ||
+          classController.text.trim() != (originalUser!['class_id'] ?? '');
     } else {
-      changed = nameController.text != (originalUser!['ins_name'] ?? '');
+      changed = nameController.text.trim() != (originalUser!['ins_name'] ?? '');
     }
 
     if (changed != isChanged) {
@@ -212,14 +212,14 @@ class _EditUserState extends State<EditUser> {
     if (formKey.currentState!.validate()) {
       if (widget.type == "student") {
         await DatabaseService().updateStudent(
-          fullName: nameController.text,
-          classId: classController.text,
+          fullName: nameController.text.trim(),
+          classId: classController.text.trim(),
           userId: widget.userid,
         );
       } else {
         await DatabaseService().updateInstructor(
-          fullName: nameController.text,
-          userId: widget.userid,
+          fullName: nameController.text.trim(),
+          userId: widget.userid.trim(),
         );
       }
     }

@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school_system/Views/widgets/role_container.dart';
 
-class Role extends StatefulWidget {
+class Role extends StatelessWidget {
   const Role({super.key});
-
-  @override
-  State<Role> createState() => _RoleState();
-}
-
-class _RoleState extends State<Role> {
-  @override
-  void initState() {
-    super.initState();
-
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +30,6 @@ class _RoleState extends State<Role> {
             bottomRight: Radius.circular(15),
           ),
         ),
-        elevation: 4,
         bottom: PreferredSize(
           preferredSize: Size(0, 25),
           child: Padding(

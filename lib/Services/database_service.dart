@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_school_system/Helpers/bottom_sheet_bar.dart';
 import 'package:smart_school_system/Models/bookingModel.dart';
-import 'package:smart_school_system/Models/placesModel.dart';
 import 'package:smart_school_system/Views/widgets/drop_down_intervals.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -67,8 +66,8 @@ class DatabaseService {
     required String classId,
   }) async {
     final authRes = await supabase.auth.signUp(
-      email: email,
-      password: password,
+      email: email.trim(),
+      password: password.trim(),
     );
 
     final String userId = authRes.user!.id;
@@ -88,8 +87,8 @@ class DatabaseService {
     required String fullName,
   }) async {
     final authRes = await supabase.auth.signUp(
-      email: email,
-      password: password,
+      email: email.trim(),
+      password: password.trim(),
     );
 
     final String userId = authRes.user!.id;
@@ -213,15 +212,9 @@ class DatabaseService {
         "Booked Successfully",
         backgroundColor: Color.fromARGB(255, 56, 110, 238),
       );
-      Navigator.pop(context);
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       showSnackBar(context, "Booking failed: $e", backgroundColor: Colors.red);
     }
   }
-
-  // List<PlacesModel> places = [];
-  // Future<List<PlacesModel>> fetchPlaces() async {
-  //   final response = await supabase.from('Places').select();
-  //   return response.map<PlacesModel>((e) => .fromMap(e)).toList();
-  // }
 }

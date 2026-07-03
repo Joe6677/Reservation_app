@@ -2,16 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:smart_school_system/RegX/regX.dart';
 import 'package:smart_school_system/Services/submit.dart';
 import 'package:smart_school_system/Views/widgets/formField.dart';
+import 'package:smart_school_system/Views/widgets/role_container.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ignore: must_be_immutable
 class SignIn extends StatelessWidget {
   SignIn({super.key});
   TextEditingController emailController = TextEditingController(
-    text: 'drmoaazahmed@gmail.com',
+    text: selection == "Instructor"
+        ? 'yousefhesham468@gmail.com'
+        : selection == "Student"
+        ? 'yousefhesham2468@gmail.com'
+        : 'admin123@gmail.com',
   );
   TextEditingController passwordController = TextEditingController(
-    text: "MZ222007",
+    text: selection == 'Instructor'
+        ? "YF1022006"
+        : selection == "Student"
+        ? "YF1022006"
+        : "Admin123#",
   );
   final formKey = GlobalKey<FormState>();
 
@@ -49,7 +58,6 @@ class SignIn extends StatelessWidget {
               Text("Let's get you in.", style: TextStyle(color: Colors.white)),
             ],
           ),
-          elevation: 4,
         ),
       ),
       body: Form(
